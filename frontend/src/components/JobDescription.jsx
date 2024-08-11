@@ -8,7 +8,13 @@ import { useParams } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { setSingleJob } from "@/redux/jobSlice";
 import axios from "axios";
-import { BASIC_URL, JOB_API_END_POINT } from "@/utils/constant";
+import {
+  APPLY_JOB_API_END_POINT,
+  BASIC_URL,
+  JOB_API_END_POINT,
+} from "@/utils/constant";
+import { setApplyJobs } from "@/redux/applicationSlice";
+import { toast } from "sonner";
 
 const JobDescription = () => {
   const params = useParams();
@@ -23,6 +29,32 @@ const JobDescription = () => {
 
   const dispatch = useDispatch();
 
+  //Applying job
+  const { mutate: applyJob } = useMutation({
+    mutationFn: async () => {
+      const response = await axios.post(
+        `${BASIC_URL}${APPLY_JOB_API_END_POINT}/apply/${jobId}`,
+        {
+          withCredentials: true,
+        }
+      );
+      console.log(response);
+
+      if (response.status === 201) {
+        toast.success(response.data.message);
+      }
+      return response.data;
+    },
+    onSuccess: (data) => {
+      dispatch(setApplyJobs(data));
+    },
+    onError: (error) => {
+      console.log(error);
+      toast.error(error.response.data.message);
+    },
+  });
+
+  //Job details
   const { mutate: getSingleJob } = useMutation({
     mutationFn: async () => {
       const response = await axios.get(
@@ -68,6 +100,7 @@ const JobDescription = () => {
 
           <Button
             disabled={isApplied}
+            onClick={isApplied ? null : applyJob}
             className={`rounded-lg ${
               isApplied
                 ? "bg-orange-300 hover:bg-orange-400 cursor-not-allowed text-black"

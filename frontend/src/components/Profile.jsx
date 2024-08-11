@@ -9,7 +9,6 @@ import AppliedJobsTabel from "./AppliedJobsTabel";
 import UpdateProfileModel from "./UpdateProfileModel";
 import { useSelector } from "react-redux";
 
-const skills = ["Html", "CSS", "JavaScript", "TailwindCss", "React"];
 const isResume = true;
 
 const Profile = () => {

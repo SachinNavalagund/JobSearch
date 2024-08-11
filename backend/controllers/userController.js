@@ -139,10 +139,6 @@ export const updateProfile = async (req, res) => {
 
     const file = req.file;
 
-    const fileUri = getDataUri(file);
-
-    const response = await cloudinary.uploader.upload(fileUri.content);
-
     let skillArray;
     if (skills) {
       skillArray = skills.split(",");
@@ -158,15 +154,20 @@ export const updateProfile = async (req, res) => {
       });
     }
 
+    if (file) {
+      const fileUri = getDataUri(file);
+
+      const response = await cloudinary.uploader.upload(fileUri.content);
+      user.profile.resume = response.secure_url;
+      user.profile.resumeOriginalName = file.originalname;
+    }
+
     user.fullName = fullName || user.fullName;
     user.email = email || user.email;
     user.phoneNumber = phoneNumber || user.phoneNumber;
     user.profile.bio = bio || user.profile.bio;
     user.profile.skills = skillArray || user.profile.skills;
-    if (response) {
-      user.profile.resume = response.secure_url;
-      user.profile.resumeOriginalName = file.originalname;
-    }
+
     user = await user.save();
 
     return res
