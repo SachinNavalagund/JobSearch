@@ -60,9 +60,9 @@ export const postJob = async (req, res) => {
     });
   } catch (error) {
     console.log(`Error in postJob : ${error.message}`);
-   return res.status(500).json({
-     error: error,
-   });
+    return res.status(500).json({
+      error: error,
+    });
   }
 };
 
@@ -97,7 +97,7 @@ export const getAllJobs = async (req, res) => {
 export const getJobById = async (req, res) => {
   try {
     const jobId = req.params.id;
-    const job = await Job.findById(jobId);
+    const job = await Job.findById(jobId).populate({ path: "applications" });
     if (!job) {
       return res.status(404).json({
         message: "Jobs not found",
@@ -107,9 +107,9 @@ export const getJobById = async (req, res) => {
     return res.status(200).json(job);
   } catch (error) {
     console.log(`Error in getJobById : ${error.message}`);
-   return res.status(500).json({
-     error: error,
-   });
+    return res.status(500).json({
+      error: error,
+    });
   }
 };
 
@@ -126,8 +126,8 @@ export const getAdminJobs = async (req, res) => {
     return res.status(200).json(jobs);
   } catch (error) {
     console.log(`Error in getAdminJobs : ${error.message}`);
-   return res.status(500).json({
-     error: error,
-   });
+    return res.status(500).json({
+      error: error,
+    });
   }
 };

@@ -1,34 +1,33 @@
-import { setAllJobs } from "@/redux/jobSlice";
+import { setSingleJob } from "@/redux/jobSlice";
 import { BASIC_URL, JOB_API_END_POINT } from "@/utils/constant";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 
-const useGetAllJobs = () => {
+const useSingleJob = (jobId) => {
   const dispatch = useDispatch();
-
-  const { mutate: fetchJobs } = useMutation({
+  const { mutate: getSingleJob } = useMutation({
     mutationFn: async () => {
       const response = await axios.get(
-        `${BASIC_URL}${JOB_API_END_POINT}/getJobs`,
+        `${BASIC_URL}${JOB_API_END_POINT}/getjob/${jobId}`,
         {
           withCredentials: true,
         }
       );
+      console.log(response.data);
       return response.data;
     },
     onSuccess: (data) => {
-      dispatch(setAllJobs(data));
+      dispatch(setSingleJob(data));
     },
     onError: (error) => {
-      console.error("Something went wrong", error);
+      console.log(error);
     },
   });
-
   useEffect(() => {
-    fetchJobs();
-  }, [fetchJobs]);
+    getSingleJob();
+  }, [getSingleJob]);
 };
 
-export default useGetAllJobs;
+export default useSingleJob;
