@@ -1,5 +1,7 @@
 import { Company } from "../models/companyModel.js";
 import { User } from "../models/userModel.js";
+import cloudinary from "../utils/cloudinary.js";
+import getDataUri from "../utils/dataUri.js";
 
 export const registerCompany = async (req, res) => {
   try {
@@ -45,9 +47,9 @@ export const registerCompany = async (req, res) => {
     });
   } catch (error) {
     console.log(`Error in register company: ${error.message}`);
-   return res.status(500).json({
-     error: error,
-   });
+    return res.status(500).json({
+      error: error,
+    });
   }
 };
 
@@ -64,9 +66,9 @@ export const getCompany = async (req, res) => {
     return res.status(201).json(companies);
   } catch (error) {
     console.log(`Error in getCompany : ${error.message}`);
-   return res.status(500).json({
-     error: error,
-   });
+    return res.status(500).json({
+      error: error,
+    });
   }
 };
 
@@ -83,35 +85,46 @@ export const getCopmanyByID = async (req, res) => {
     return res.status(200).json(company);
   } catch (error) {
     console.log(`Error in getCopmanyByID : ${error.message}`);
-   return res.status(500).json({
-     error: error,
-   });
+    return res.status(500).json({
+      error: error,
+    });
   }
 };
 
 export const updateCompany = async (req, res) => {
   try {
     const { name, description, website, location } = req.body;
+    console.log(name, description, website, location);
+    const file = req.file;
 
-    const updateData = { name, description, website, location };
-
-    const company = await Company.findByIdAndUpdate(req.params.id, updateData, {
-      new: true,
-    });
+    let company = await Company.findById(req.params.id);
 
     if (!company) {
       res.status(400).json({
         message: "Company not found",
       });
     }
+    if (file) {
+      const fileUri = getDataUri(file);
+      const response = await cloudinary.uploader.upload(fileUri.content);
+      console.log("Response ->", response);
+      company.logo = response.secure_url;
+    }
+
+    company.name = name || company.name;
+    company.description = description || company.description;
+    company.website = website || company.website;
+    company.location = location || company.location;
+
+    company = await company.save();
 
     return res
       .status(201)
       .json({ message: "Company updated successfully", company });
   } catch (error) {
     console.log(`Error in updateCompany : ${error.message}`);
-   return res.status(500).json({
-     error: error,
-   });
+    return res.status(500).json({
+      error: error,
+    });
   }
 };
