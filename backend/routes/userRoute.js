@@ -4,6 +4,7 @@ import {
   logout,
   register,
   updateProfile,
+  updateProfilePhoto,
 } from "../controllers/userController.js";
 import { protectRoute } from "../middleware/protectedRoute.js";
 import { singleUpload } from "../middleware/multer.js";
@@ -16,4 +17,7 @@ router.route("/logout").get(logout);
 router
   .route("/profile/updateProfile")
   .patch(protectRoute, singleUpload, updateProfile);
+router
+  .route("/profile/updateProfilePhoto")
+  .patch(protectRoute, singleUpload, updateProfilePhoto);
 export default router;

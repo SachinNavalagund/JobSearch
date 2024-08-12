@@ -93,7 +93,7 @@ const UpdateProfileModel = ({ open, setOpen }) => {
                 <Label htmlFor="name">Name</Label>
                 <Input
                   id="name"
-                  name="name"
+                  name="fullName"
                   type="text"
                   value={input.fullName}
                   onChange={changeEventHandler}

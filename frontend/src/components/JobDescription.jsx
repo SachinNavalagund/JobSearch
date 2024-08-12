@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "./shared/Navbar";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
@@ -13,7 +13,6 @@ import {
   BASIC_URL,
   JOB_API_END_POINT,
 } from "@/utils/constant";
-import { setApplyJobs } from "@/redux/applicationSlice";
 import { toast } from "sonner";
 
 const JobDescription = () => {
@@ -21,32 +20,37 @@ const JobDescription = () => {
   const { singleJob } = useSelector((store) => store.job);
   const { user } = useSelector((store) => store.auth);
 
-  const isApplied =
+  const isInitiallyApplied =
     singleJob?.applications?.some(
-      (applied) => applied.applicant === user?._id
+      (application) => application.applicant === user?._id
     ) || false;
+  const [isApplied, setIsApplied] = useState(isInitiallyApplied);
   const jobId = params.id;
 
   const dispatch = useDispatch();
 
   //Applying job
-  const { mutate: applyJob } = useMutation({
+  const { mutate: applyJobs } = useMutation({
     mutationFn: async () => {
       const response = await axios.post(
         `${BASIC_URL}${APPLY_JOB_API_END_POINT}/apply/${jobId}`,
+        {},
         {
+          headers: {
+            "Content-Type": "application/json",
+          },
           withCredentials: true,
         }
       );
-      console.log(response);
-
       if (response.status === 201) {
+        setIsApplied(true);
+        const updatedJob = {
+          ...singleJob,
+          applications: [...singleJob.applications, { applicant: user?._id }],
+        };
+        dispatch(setSingleJob(updatedJob));
         toast.success(response.data.message);
       }
-      return response.data;
-    },
-    onSuccess: (data) => {
-      dispatch(setApplyJobs(data));
     },
     onError: (error) => {
       console.log(error);
@@ -63,6 +67,13 @@ const JobDescription = () => {
           withCredentials: true,
         }
       );
+      if (response.status === 200) {
+        setIsApplied(
+          response.data.applications.some(
+            (application) => application.applicant === user?._id
+          )
+        );
+      }
 
       return response.data;
     },
@@ -100,7 +111,7 @@ const JobDescription = () => {
 
           <Button
             disabled={isApplied}
-            onClick={isApplied ? null : applyJob}
+            onClick={isApplied ? null : applyJobs}
             className={`rounded-lg ${
               isApplied
                 ? "bg-orange-300 hover:bg-orange-400 cursor-not-allowed text-black"

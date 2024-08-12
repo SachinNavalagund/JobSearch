@@ -132,6 +132,39 @@ export const logout = async (req, res) => {
   }
 };
 
+export const updateProfilePhoto = async (req, res) => {
+  try {
+    const file = req.file;
+    console.log("File ->", file);
+
+    const userID = req.user._id;
+    console.log(userID);
+
+    let user = await User.findById(userID);
+    if (!user) {
+      return res.status(400).json({
+        message: "User not found",
+      });
+    }
+    if (file) {
+      const fileUri = getDataUri(file);
+      console.log("Url ", fileUri);
+
+      const response = await cloudinary.uploader.upload(fileUri.content);
+      console.log("Response ->", response);
+
+      user.profile.profilePhoto = response.secure_url;
+      console.log("Profile photo", user.profile.profilePhoto);
+    }
+    return res.status(201).json({ message: "Profile Photo updated 🎉", user });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      error: "Internal server error",
+    });
+  }
+};
+
 export const updateProfile = async (req, res) => {
   try {
     const { fullName, email, phoneNumber, bio, skills } = req.body;
