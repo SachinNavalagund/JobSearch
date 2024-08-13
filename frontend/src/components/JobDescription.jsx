@@ -95,7 +95,10 @@ const JobDescription = () => {
       <div className="max-w-7xl mx-auto my-10">
         <div className="flex items-center justify-between">
           <div>
-            <p className="font-bold text-xl">{singleJob?.title}</p>
+            <p className="font-bold text-xl">
+              <span className="text-main-001">{singleJob?.company?.name} </span>
+              hiring {singleJob?.title}
+            </p>
             <div className="flex items-center gap-2 mt-4">
               <Badge className="text-orange-500 font-bold" variant="ghost">
                 {singleJob?.position}
@@ -140,6 +143,16 @@ const JobDescription = () => {
             Description:
             <span className="pl-4 font-normal text-gray-800">
               {singleJob?.description}
+            </span>
+          </p>
+          <p className="font-bold my-1">
+            Requirements:
+            <span className="pl-4 font-normal text-gray-800">
+              {singleJob?.requirements.map((req, index) => (
+                <Badge key={index} className="mx-2">
+                  {req}
+                </Badge>
+              ))}
             </span>
           </p>
           <p className="font-bold my-1">

@@ -32,7 +32,7 @@ const Job = ({ job }) => {
       <div className="flex items-center gap-2 my-2">
         <Button className="p-6" variant="outline" size="icon">
           <Avatar>
-            <AvatarImage src="https://www.polymtl.ca/calendrier/sites/calendrier.amigow2020.polymtl.ca/files/googlelogo.jpg" />
+            <AvatarImage src={job?.company?.logo} />
           </Avatar>
         </Button>
         <div>
@@ -46,7 +46,7 @@ const Job = ({ job }) => {
       </div>
       <div className="flex items-center gap-2 mt-4">
         <Badge className="text-orange-500 font-bold" variant="ghost">
-          {job?.position}
+          {job?.position} Positions
         </Badge>
         <Badge className="text-slate-500 font-bold" variant="ghost">
           {job?.jobType}

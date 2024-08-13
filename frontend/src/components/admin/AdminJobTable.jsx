@@ -8,7 +8,6 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
-import { Avatar, AvatarImage } from "../ui/avatar";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Edit2, MoreHorizontal } from "lucide-react";
 import { useSelector } from "react-redux";
@@ -31,7 +30,13 @@ const AdminJobTable = () => {
         if (!searchJobByText) {
           return true;
         }
-        return job?.name?.toLowerCase().includes(searchJobByText.toLowerCase());
+
+        return (
+          job?.title?.toLowerCase().includes(searchJobByText.toLowerCase()) ||
+          job?.company?.name
+            ?.toLowerCase()
+            .includes(searchJobByText.toLowerCase())
+        );
       });
     setFilterAdminJob(filteredAdminJob);
   }, [allAdminJobs, searchJobByText]);

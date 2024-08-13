@@ -4,11 +4,10 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 
 import { useNavigate } from "react-router-dom";
-import useGetAllCompanies from "@/hooks/useGetAllCompanies";
 import { useDispatch } from "react-redux";
-import { setSerachCompanyByText } from "@/redux/companySlice";
 import AdminJobTable from "./AdminJobTable";
 import useGetAllAdminJobs from "@/hooks/useGetAllAdminJobs";
+import { setSerachAdminJob } from "@/redux/jobSlice";
 
 const AdminJobs = () => {
   useGetAllAdminJobs();
@@ -18,7 +17,7 @@ const AdminJobs = () => {
   const [input, setInput] = useState("");
 
   useEffect(() => {
-    dispatch(setSerachCompanyByText(input));
+    dispatch(setSerachAdminJob(input));
   }, [input]);
   return (
     <>
@@ -27,7 +26,7 @@ const AdminJobs = () => {
         <div className="flex items-center justify-between my-5">
           <Input
             className="w-fit"
-            placeholder="Filter by name"
+            placeholder="Filter by name, role"
             onChange={(e) => setInput(e.target.value)}
           />
           <Button
