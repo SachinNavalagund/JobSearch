@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../shared/Navbar";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
@@ -12,7 +12,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { setLoading, setUser } from "@/redux/authSlice";
 import { Loader2 } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
-// import { data } from "autoprefixer";
 
 const Login = () => {
   const [loginFormData, setLoginFormData] = useState({
@@ -24,6 +23,7 @@ const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { loading } = useSelector((store) => store.auth);
+  const { user } = useSelector((store) => store.auth);
 
   const onChangeEvent = (event) => {
     const { name, value } = event.target;
@@ -58,44 +58,12 @@ const Login = () => {
     }
   };
 
-  // const { mutate: login, isPending } = useMutation({
-  //   mutationFn: async ({ email, password, role }) => {
-  //     try {
-  //       const response = await fetch(
-  //         `${BASIC_URL}${USER_API_END_POINT}/login`,
-  //         {
-  //           method: "POST",
-  //           headers: {
-  //             "Content-Type": "application/json",
-  //           },
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  });
 
-  //           body: JSON.stringify({
-  //             email,
-  //             password,
-  //             role,
-  //           }),
-  //         }
-  //       );
-
-  //       const data = await response.json();
-
-  //       if (!response.ok) {
-  //         toast.error(data.error);
-  //         throw new Error(data.error || "Somthing went wrong");
-  //       }
-  //       toast.success(data.message);
-  //       navigate("/");
-  //       return data;
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   },
-  // });
-
-  // const handleSubmit = (event) => {
-  //   event.preventDefault();
-  //   login(loginFormData);
-  // };
   return (
     <div>
       <Navbar />
